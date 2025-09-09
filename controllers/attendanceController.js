@@ -2,10 +2,10 @@ import Attendance from "../models/Attendance.js";
 import Student from "../models/Student.js";
 import Class from "../models/Class.js";
 
-// ✅ Mark attendance for a student (with optional date)
+
 const markAttendance = async (req, res) => {
   try {
-    const { studentId, status, date } = req.body; // <-- added date
+    const { studentId, status, date } = req.body; 
     const teacherId = req.Id;
 
     if (!teacherId) {
@@ -20,7 +20,7 @@ const markAttendance = async (req, res) => {
       return res.status(404).json({ message: "Student not found" });
     }
 
-    // Ensure the teacher owns the class this student belongs to
+    
     const targetClass = await Class.findOne({
       _id: student.class,
       teacher: teacherId,
@@ -33,10 +33,10 @@ const markAttendance = async (req, res) => {
         });
     }
 
-    // Use the provided date or default to today
+    
     const attendanceDate = date ? new Date(date) : new Date();
 
-    // Create attendance entry
+    
     const newAttendance = new Attendance({
       student: studentId,
       teacher: teacherId,
@@ -54,7 +54,7 @@ const markAttendance = async (req, res) => {
 };
 
 
-// ✅ Get attendance of one student
+
 const getStudentAttendance = async (req, res) => {
   try {
     const { studentId } = req.params;
@@ -70,35 +70,11 @@ const getStudentAttendance = async (req, res) => {
   }
 };
 
-//  Get attendance of all students in a class (for logged-in teacher)
-// const getClassAttendance = async (req, res) => {
-//   try {
-//     const { classId } = req.params;
-//     const teacherId = req.Id;
 
-//     const targetClass = await Class.findOne({
-//       _id: classId,
-//       teacher: teacherId,
-//     });
-//     if (!targetClass) {
-//       return res
-//         .status(403)
-//         .json({ message: "Not authorized to view this class attendance" });
-//     }
 
-//     const records = await Attendance.find({ class: classId })
-//       .populate("student", "name rollno")
-//       .populate("teacher", "name email");
 
-//     res.json(records);
-//   } catch (error) {
-//     console.error("Error fetching class attendance:", error);
-//     res.status(500).json({ message: "Server error" });
-//   }
-// };
 
-// ✅ Get all attendance records for a teacher
-// Safe getTeacherAttendance
+
 const getTeacherAttendance = async (req, res) => {
   try {
     const teacherId = req.Id;
