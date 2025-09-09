@@ -34,7 +34,7 @@ app.use("/attendance", attendanceRoutes);
 
 
 app.get("/", (req, res) => {
-  res.send("Student Attendance Management API is running 🚀");
+  res.send("Student Attendance Management API is running ");
 });
 
 
