@@ -1,4 +1,3 @@
-// middlewares/verifyToken.js
 import Teacher from '../models/Teacher.js';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
@@ -9,7 +8,6 @@ const secretKey = process.env.JWT_SECRET;
 const verifyToken = async (req, res, next) => {
   let token = req.headers.token || req.headers.authorization;
 
-  // If Authorization header exists, extract Bearer token
   if (token && token.startsWith("Bearer ")) {
     token = token.split(" ")[1];
   }
