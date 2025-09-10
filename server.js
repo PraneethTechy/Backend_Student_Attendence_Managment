@@ -15,12 +15,12 @@ dotenv.config();
 const app = express();
 
 
-app.use(express.json()); // parse JSON requests
+app.use(express.json()); 
 
 
 app.use(
   cors({
-    origin: "*", // ⚠️ For production, replace with your frontend domain
+    origin: "*", 
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
@@ -34,11 +34,7 @@ app.use("/attendance", attendanceRoutes);
 
 
 app.get("/", (req, res) => {
-<<<<<<< HEAD
   res.send("Student Attendence Management");
-=======
-  res.send("Student Attendance Management API is running ");
->>>>>>> 502ff3b409278f47a1d11d962ec5d69c1713bf3d
 });
 
 
