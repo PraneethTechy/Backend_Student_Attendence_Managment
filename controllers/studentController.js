@@ -54,28 +54,30 @@ const addStudent = async (req, res) => {
 // ✅ Delete Student
 const deleteStudent = async (req, res) => {
   try {
-    const { studentId } = req.params;
+    const teacherId = req.Id; // from auth middleware
+    const studentId = req.params.id;
 
-    const student = await Student.findById(studentId);
+    const student = await Student.findById(studentId).populate("class");
     if (!student) {
       return res.status(404).json({ message: "Student not found" });
     }
 
-    // Check if teacher is authorized (student must belong to teacher's class)
-    const targetClass = await Class.findOne({ _id: student.class, teacher: req.Id });
-    if (!targetClass) {
+    // ✅ Ensure only the teacher who owns this student can delete
+    if (student.teacher.toString() !== teacherId.toString()) {
       return res.status(403).json({ message: "Not authorized to delete this student" });
     }
 
-    // Remove student from class
-    targetClass.students.pull(student._id);
-    await targetClass.save();
+    // ✅ Remove student reference from class
+    if (student.class) {
+      await Class.findByIdAndUpdate(student.class._id, {
+        $pull: { students: student._id },
+      });
+    }
 
-    // Delete student record
+    // ✅ Delete the student itself
     await Student.findByIdAndDelete(studentId);
 
     res.json({ message: "Student deleted successfully" });
-
   } catch (error) {
     console.error("Error deleting student:", error);
     res.status(500).json({ message: "Server error" });
@@ -83,31 +85,48 @@ const deleteStudent = async (req, res) => {
 };
 
 // Edit student info
+// Edit student info
+
+
 const editStudent = async (req, res) => {
   try {
-    const { StudentId } = req.params;
-    const { name, rollno, class: studentClass } = req.body;
+    const { id } = req.params;
+    const { name, rollno, class: classId } = req.body;
 
-    const student = await Student.findById(StudentId);
-    if (!student) return res.status(404).json({ message: "Student not found" });
+    // Find student and populate class
+    const student = await Student.findById(id).populate("class");
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
 
-    // Check if logged-in teacher is allowed to edit
-    if (!student.teacher.includes(req.Id)) {
+    // Ensure class exists and belongs to logged-in teacher
+    let targetClass = student.class;
+    if (classId) {
+      targetClass = await Class.findById(classId);
+      if (!targetClass) {
+        return res.status(404).json({ message: "Class not found" });
+      }
+    }
+
+    // ✅ Authorization check
+    if (targetClass.teacher.toString() !== req.Id.toString()) {
       return res.status(403).json({ message: "Not authorized to edit this student" });
     }
 
-    if (name) student.name = name;
-    if (rollno) student.rollno = rollno;
-    if (studentClass) student.class = studentClass;
+    // Update fields
+    student.name = name || student.name;
+    student.rollno = rollno || student.rollno;
+    if (classId) student.class = classId;
 
-    const updatedStudent = await student.save();
-    res.json({ message: "Student updated successfully", student: updatedStudent });
+    await student.save();
+
+    res.json({ message: "Student updated successfully", student });
   } catch (error) {
     console.error("Error updating student:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
-// ✅ Get all students for the logged-in teacher
+
 
 
 const getStudents = async (req, res) => {
