@@ -1,9 +1,8 @@
 import Teacher from '../models/Teacher.js';
-import Class from '../models/Class.js'; // ✅ New model
+import Class from '../models/Class.js'; 
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-// ✅ Register Teacher
 const RegisterTeacher = async (req, res) => {
     const { name, email, password } = req.body;
 
@@ -28,7 +27,6 @@ const RegisterTeacher = async (req, res) => {
     }
 };
 
-// ✅ Login Teacher
 const LoginTeacher = async (req, res) => {
     const { email, password } = req.body;
 
@@ -51,7 +49,6 @@ const LoginTeacher = async (req, res) => {
     }
 };
 
-// ✅ Get all students across teacher's classes
 const getAllStudents = async (req, res) => {
     try {
         // Find all classes created by this teacher
@@ -92,7 +89,6 @@ const editTeacher = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-// Get teacher details by ID (from token)
 const getTeacherDetails = async (req, res) => {
   try {
     const teacherId = req.Id; // assuming you have verifyToken middleware

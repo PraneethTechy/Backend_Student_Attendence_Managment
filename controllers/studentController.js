@@ -2,7 +2,6 @@ import Student from '../models/Student.js';
 import Teacher from '../models/Teacher.js';
 import Class from '../models/Class.js';
 
-// ✅ Add Student to a specific Class
 const addStudent = async (req, res) => {
   try {
     const { name, rollno, classId } = req.body;
@@ -11,25 +10,21 @@ const addStudent = async (req, res) => {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    // Check if teacher exists
     const teacher = await Teacher.findById(req.Id);
     if (!teacher) {
       return res.status(404).json({ message: "Teacher not found" });
     }
 
-    // Check if class exists and belongs to teacher
     const targetClass = await Class.findOne({ _id: classId, teacher: teacher._id });
     if (!targetClass) {
       return res.status(403).json({ message: "Class not found or not authorized" });
     }
 
-    // Ensure roll number is unique inside this class
     const existingStudent = await Student.findOne({ rollno, class: classId });
     if (existingStudent) {
       return res.status(400).json({ message: "Roll number already exists in this class" });
     }
 
-    // Create new student
     const newStudent = new Student({
       name,
       rollno,
@@ -39,7 +34,6 @@ const addStudent = async (req, res) => {
 
     const savedStudent = await newStudent.save();
 
-    // Push student into class
     targetClass.students.push(savedStudent._id);
     await targetClass.save();
 
@@ -51,7 +45,6 @@ const addStudent = async (req, res) => {
   }
 };
 
-// ✅ Delete Student
 const deleteStudent = async (req, res) => {
   try {
     const teacherId = req.Id; // from auth middleware
@@ -108,12 +101,10 @@ const editStudent = async (req, res) => {
       }
     }
 
-    // ✅ Authorization check
     if (targetClass.teacher.toString() !== req.Id.toString()) {
       return res.status(403).json({ message: "Not authorized to edit this student" });
     }
 
-    // Update fields
     student.name = name || student.name;
     student.rollno = rollno || student.rollno;
     if (classId) student.class = classId;
@@ -128,14 +119,13 @@ const editStudent = async (req, res) => {
 };
 
 
-
 const getStudents = async (req, res) => {
   try {
-    const teacherId = req.Id; // from auth middleware
-    const { classId } = req.query; // <-- filter param
+    const teacherId = req.Id; 
+    const { classId } = req.query; 
 
     let filter = { teacher: teacherId };
-    if (classId && classId !== 'all') filter.class = classId; // <-- apply filter
+    if (classId && classId !== 'all') filter.class = classId; 
 
     const students = await Student.find(filter).populate('class', 'name');
     res.json(students);

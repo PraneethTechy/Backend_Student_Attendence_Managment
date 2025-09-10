@@ -12,9 +12,8 @@ const createClass = async (req, res) => {
       return res.status(400).json({ message: "Class name is required" });
     }
 
-    const teacherId = req.Id; // ✅ from verifyToken middleware
+    const teacherId = req.Id; 
 
-    // check if teacher already has a class with same name
     const existing = await Class.findOne({ name, teacher: teacherId });
     if (existing) {
       return res.status(400).json({ message: "You already have a class with this name" });
@@ -28,7 +27,6 @@ const createClass = async (req, res) => {
 
     const savedClass = await newClass.save();
 
-    // also push this class into teacher.classes
     await Teacher.findByIdAndUpdate(teacherId, {
       $push: { classes: savedClass._id }
     });
@@ -40,7 +38,6 @@ const createClass = async (req, res) => {
   }
 };
 
-// Get all classes of a teacher
 const getTeacherClasses = async (req, res) => {
   try {
     const teacherId = req.Id;
@@ -56,25 +53,21 @@ const getTeacherClasses = async (req, res) => {
   }
 };
 
-// Add student to a class
 const addStudentToClass = async (req, res) => {
   try {
     const { classId, studentId } = req.body;
     const teacherId = req.Id;
 
-    // ensure class belongs to teacher
     const classDoc = await Class.findOne({ _id: classId, teacher: teacherId });
     if (!classDoc) {
       return res.status(404).json({ message: "Class not found or not owned by you" });
     }
 
-    // ensure student exists
     const student = await Student.findById(studentId);
     if (!student) {
       return res.status(404).json({ message: "Student not found" });
     }
 
-    // prevent duplicate add
     if (classDoc.students.includes(studentId)) {
       return res.status(400).json({ message: "Student already in class" });
     }
