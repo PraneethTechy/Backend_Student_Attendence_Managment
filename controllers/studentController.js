@@ -55,19 +55,16 @@ const deleteStudent = async (req, res) => {
       return res.status(404).json({ message: "Student not found" });
     }
 
-    // ✅ Ensure only the teacher who owns this student can delete
     if (student.teacher.toString() !== teacherId.toString()) {
       return res.status(403).json({ message: "Not authorized to delete this student" });
     }
 
-    // ✅ Remove student reference from class
     if (student.class) {
       await Class.findByIdAndUpdate(student.class._id, {
         $pull: { students: student._id },
       });
     }
 
-    // ✅ Delete the student itself
     await Student.findByIdAndDelete(studentId);
 
     res.json({ message: "Student deleted successfully" });
@@ -77,8 +74,7 @@ const deleteStudent = async (req, res) => {
   }
 };
 
-// Edit student info
-// Edit student info
+
 
 
 const editStudent = async (req, res) => {
