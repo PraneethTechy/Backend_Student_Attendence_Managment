@@ -34,5 +34,4 @@ It powers authentication, class management, student records, and attendance trac
 
 ---
 
-## 📂 Project Structure
 
