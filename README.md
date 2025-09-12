@@ -1,9 +1,7 @@
 
 ---
 
-# 📌 Backend README (Node.js + Express + MongoDB)
 
-```markdown
 # 🎓 Student Attendance Management System - Backend
 
 This is the **Backend** of the Student Attendance Management System, built with **Node.js, Express, and MongoDB**.  
