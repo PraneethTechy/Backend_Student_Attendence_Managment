@@ -7,7 +7,11 @@
 # 🎓 Student Attendance Management System - Backend
 
 This is the **Backend** of the Student Attendance Management System, built with **Node.js, Express, and MongoDB**.  
-It powers authentication, class management, student records, and attendance tracking via secure APIs.  
+It powers authentication, class management, student records, and attendance tracking via secure APIs.
+
+**Frontend Deployed Link** : https://frontend-student-management-system-eight.vercel.app/login
+
+**Backend Deployed Link** : https://backend-student-attendence-managment.onrender.com/
 
 ---
 
