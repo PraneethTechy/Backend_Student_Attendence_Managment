@@ -20,7 +20,7 @@ app.use(express.json());
 
 app.use(
   cors({
-origin: ["https://frontend-student-management-system-eight.vercel.app"] ,
+origin: ["https://attendance-systemonrendercom.vercel.app/register"] ,
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
