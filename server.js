@@ -20,11 +20,13 @@ app.use(express.json());
 
 app.use(
   cors({
-origin: ["https://attendance-systemonrendercom.vercel.app/register"] ,
+    origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
+
+
 
 
 app.use("/teacher", teacherRoutes);
